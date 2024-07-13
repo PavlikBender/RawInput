@@ -1,4 +1,4 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Windows.Interop;
 using Linearstar.Windows.RawInput;
 using Linearstar.Windows.RawInput.Native;
 using static RawInput.Delegates;
@@ -13,29 +13,14 @@ public class RawHook : IInputService
     // More about WndProc in UWP: https://www.travelneil.com/wndproc-in-uwp.html
 
     /// <summary>
-    /// nIndex of WndProc.
-    /// </summary>
-    private const int GWLP_WNDPROC = -4;
-
-    /// <summary>
     /// Any custom WndProc handling code goes here...
     /// </summary>
     private const int WM_INPUT = 0x00FF;
 
     /// <summary>
-    /// Base WndProc pointer.
-    /// </summary>
-    private IntPtr _wndProc;
-
-    /// <summary>
     /// Raw input needs a window handle of an app.
     /// </summary>
     private IntPtr _windowHandle;
-
-    /// <summary>
-    /// Delegate that call then WndProc invokes.
-    /// </summary>
-    private readonly WndProcDelegate _calledDelegate;
 
     /// <summary>
     /// List of pressed keys.
@@ -55,10 +40,6 @@ public class RawHook : IInputService
     public RawHook()
     {
         _pressedKeys = new List<KeyInfo>();
-
-        // Assign the delegate to a variable, so that garbage collector won't 
-        // wipe it out from underneath us.
-        _calledDelegate = WindowProcess;
     }
 
     /// <summary>
@@ -89,26 +70,20 @@ public class RawHook : IInputService
     {
         _windowHandle = windowHandle;
 
-        var functionPointer = Marshal.GetFunctionPointerForDelegate(_calledDelegate);
-        _wndProc = WinAPI.SetWindowLongPtr(_windowHandle, GWLP_WNDPROC, functionPointer);
-
         Start();
+
+        var source = HwndSource.FromHwnd(_windowHandle);
+        source.AddHook(Hook);
     }
 
-    /// <summary>
-    /// WndProc overriding function.
-    /// </summary>
-    private IntPtr WindowProcess(IntPtr hwnd, uint message, IntPtr wParam, IntPtr lParam)
+    private IntPtr Hook(IntPtr hwnd, int message, IntPtr wParam, IntPtr lParam, ref bool handled)
     {
-
-        // You can read inputs by processing the WM_INPUT message.
         if (message == WM_INPUT)
         {
             InputProcess(lParam);
         }
 
-        // Call the "base" WndProc.
-        return WinAPI.CallWindowProc(_wndProc, hwnd, message, wParam, lParam);
+        return IntPtr.Zero;
     }
 
     /// <summary>
