@@ -1,4 +1,6 @@
-﻿namespace RawInput;
+﻿using System.Runtime.CompilerServices;
+
+namespace RawInput;
 
 /// <summary>
 /// Key model.
@@ -183,6 +185,11 @@ public class Key : IKey
         get; 
         set;
     }
+
+    /// <summary>
+    /// Name of key.
+    /// </summary>
+    public string Name => ToString();
 
     public Key(uint code)
     {

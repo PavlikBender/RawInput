@@ -13,4 +13,12 @@ public interface IKey
         get;
         set;
     }
+
+    /// <summary>
+    /// Name of key.
+    /// </summary>
+    string Name
+    {
+        get;
+    }
 }
