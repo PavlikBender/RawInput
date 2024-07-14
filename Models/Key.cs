@@ -1,6 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-
-namespace RawInput;
+﻿namespace RawInput;
 
 /// <summary>
 /// Key model.
