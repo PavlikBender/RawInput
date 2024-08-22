@@ -37,7 +37,7 @@ public class KeyInfo
             return keyInfo.Key == Key && keyInfo.DevicePath == DevicePath;
         }
 
-        return base.Equals(obj);
+        return false;
     }
 
     /// <summary>
