@@ -76,7 +76,7 @@ public class RawHook : IInputService
         source.AddHook(Hook);
     }
 
-    private IntPtr Hook(IntPtr hwnd, int message, IntPtr wParam, IntPtr lParam, ref bool handled)
+    private IntPtr Hook(int message, IntPtr lParam)
     {
         if (message == WM_INPUT)
         {
@@ -114,7 +114,7 @@ public class RawHook : IInputService
             }
 
             if ((keyboard.Flags == RawKeyboardFlags.None || keyboard.Flags == RawKeyboardFlags.KeyE0 || keyboard.Flags == RawKeyboardFlags.KeyE1)
-                && !_pressedKeys.Any(k => Equals(k, keyInfo)))
+                && !_pressedKeys.Contains(keyInfo))
             {
                 _pressedKeys.Add(keyInfo);
                 KeyDown?.Invoke(new HookEventArgs(keyInfo));

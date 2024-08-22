@@ -228,7 +228,7 @@ public class Key : IKey
         if (obj is Key key)
             return Code == key.Code;
 
-        return base.Equals(obj);
+        return false;
     }
 
     /// <summary>
